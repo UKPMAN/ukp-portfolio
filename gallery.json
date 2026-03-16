@@ -1,0 +1,48 @@
+{
+  "artist": {
+    "name": "UKP MAN",
+    "tagline": "Architectural 3D Artist",
+    "bio": "Exploring space, light, and material through hyperrealistic architectural renders. Every frame is a world built from scratch.",
+    "email": "hello@ukpman.com",
+    "instagram": "https://instagram.com/ukpman",
+    "artstation": "https://artstation.com/ukpman"
+  },
+  "renders": [
+    {
+      "id": "001",
+      "title": "The Concrete Cathedral",
+      "category": "Interior",
+      "description": "A brutalist chapel interior bathed in raking afternoon light. Exploring raw material honesty and spiritual geometry.",
+      "software": ["Blender", "Cycles"],
+      "year": 2025,
+      "featured": true,
+      "image": "images/renders/render-001.jpg",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "id": "002",
+      "title": "Thermal Corridor",
+      "category": "Interior",
+      "description": "Long-exposure study of a Japanese onsen corridor. Steam, stone, and silence.",
+      "software": ["Cinema 4D", "Octane"],
+      "year": 2025,
+      "featured": true,
+      "image": "images/renders/render-002.jpg",
+      "width": 1080,
+      "height": 1350
+    },
+    {
+      "id": "003",
+      "title": "Glass House Study",
+      "category": "Exterior",
+      "description": "Mies-inspired pavilion at dusk. Transparency and reflection as architectural language.",
+      "software": ["Blender", "Cycles", "Lightroom"],
+      "year": 2024,
+      "featured": false,
+      "image": "images/renders/render-003.jpg",
+      "width": 1920,
+      "height": 1080
+    }
+  ]
+}

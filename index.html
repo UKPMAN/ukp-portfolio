@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UKP MAN — Architectural 3D Artist</title>
+  <meta name="description" content="Hyperrealistic architectural renders by UKP MAN." />
+  <meta name="robots" content="index, follow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Outfit:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loading-screen">
+  <div class="loader-wordmark"><strong>UKP</strong> MAN</div>
+  <div class="loader-track"><div class="loader-fill" id="loader-fill"></div></div>
+</div>
+
+<!-- Header -->
+<header id="site-header">
+  <a href="#hero" class="header-wordmark">
+    <span class="header-wordmark-main">UKP MAN</span>
+    <span class="header-wordmark-sub">Architectural 3D</span>
+  </a>
+  <nav class="header-nav">
+    <a href="#gallery">Work</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<!-- Hero -->
+<section id="hero">
+  <div class="hero-atmosphere" aria-hidden="true"></div>
+  <div class="hero-structure" aria-hidden="true"></div>
+  <div class="container hero-content">
+    <div class="hero-label">
+      <div class="hero-label-dash"></div>
+      <span id="artist-tagline">Architectural 3D Artist</span>
+    </div>
+    <h1 class="hero-name">
+      <span class="hero-name-line"><span>UKP</span></span>
+      <span class="hero-name-line"><span>MAN.</span></span>
+    </h1>
+    <div class="hero-footer">
+      <p class="hero-descriptor" id="artist-bio">
+        Exploring space, light, and material through hyperrealistic architectural renders.
+      </p>
+      <div class="hero-scroll" aria-hidden="true">
+        <div class="hero-scroll-bar"></div>
+        <span>Scroll</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Gallery -->
+<section id="gallery">
+  <div class="container">
+    <div class="gallery-header">
+      <div>
+        <div class="section-label">
+          <span class="section-label-num">01</span>
+          <div class="section-label-line"></div>
+          <span class="section-label-text">Portfolio</span>
+        </div>
+        <h2 class="section-title">Selected <em>Work</em></h2>
+      </div>
+      <div class="gallery-filters" id="gallery-filters"></div>
+    </div>
+    <div class="gallery-grid" id="gallery-grid"></div>
+    <div class="gallery-empty" id="gallery-empty" style="display:none;">Nothing here yet.</div>
+  </div>
+</section>
+
+<!-- About -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div data-reveal>
+        <div class="section-label">
+          <span class="section-label-num">02</span>
+          <div class="section-label-line"></div>
+          <span class="section-label-text">About</span>
+        </div>
+        <h2 class="about-headline">The mind<br>behind the <em>render.</em></h2>
+        <p class="about-body" id="artist-bio-2">
+          Exploring space, light, and material through hyperrealistic architectural renders. Every frame is a world built from scratch.
+        </p>
+        <p class="about-body" style="color:var(--text-muted); font-size:0.8rem;">
+          Open for commissions &amp; collaborations.
+        </p>
+      </div>
+      <div class="about-stats" data-reveal data-delay="2">
+        <div class="stat"><div class="stat-n" id="stat-years">5+</div><div class="stat-l">Years Active</div></div>
+        <div class="stat"><div class="stat-n" id="stat-count">—</div><div class="stat-l">Renders</div></div>
+        <div class="stat"><div class="stat-n">∞</div><div class="stat-l">Iterations</div></div>
+        <div class="stat"><div class="stat-n">1</div><div class="stat-l">Artist</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-wrap" data-reveal>
+      <div>
+        <div class="section-label" style="margin-bottom:1.5rem;">
+          <span class="section-label-num">03</span>
+          <div class="section-label-line"></div>
+          <span class="section-label-text">Contact</span>
+        </div>
+        <div class="contact-big">Let's<br>Work<br><em>Together.</em></div>
+      </div>
+      <div class="contact-links">
+        <a href="mailto:hello@ukpman.com" class="clink" id="clink-email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          <span id="clink-email-label">hello@ukpman.com</span>
+        </a>
+        <a href="https://instagram.com/ukpman" target="_blank" rel="noopener" class="clink" id="clink-insta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          <span id="clink-insta-label">instagram.com/ukpman</span>
+        </a>
+        <a href="https://artstation.com/ukpman" target="_blank" rel="noopener" class="clink" id="clink-artstn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 14l4-8 4 8M9.5 11h5"/></svg>
+          <span id="clink-artstn-label">artstation.com/ukpman</span>
+        </a>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <span class="footer-text">© <span id="footer-year"></span> UKP MAN. All rights reserved.</span>
+      <span class="footer-text" style="font-family:var(--font-mono); font-size:0.62rem; letter-spacing:0.05em;">Hosted on GitHub Pages</span>
+    </div>
+  </div>
+</section>
+
+<!-- Lightbox -->
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <div class="lb-backdrop" id="lb-backdrop"></div>
+  <div class="lb-container">
+    <div class="lb-img-wrap">
+      <button class="lb-nav lb-prev" id="lb-prev" aria-label="Previous">←</button>
+      <img id="lb-img" src="" alt="" />
+      <button class="lb-nav lb-next" id="lb-next" aria-label="Next">→</button>
+    </div>
+    <div class="lb-panel">
+      <button class="lb-close" id="lb-close" aria-label="Close">✕</button>
+      <h2 class="lb-title" id="lb-title"></h2>
+      <p class="lb-desc" id="lb-desc"></p>
+      <div class="lb-divider"></div>
+      <div class="lb-row"><span class="lb-row-label">Category</span><span class="lb-row-val" id="lb-cat"></span></div>
+      <div class="lb-row"><span class="lb-row-label">Year</span><span class="lb-row-val" id="lb-year"></span></div>
+      <div class="lb-row"><span class="lb-row-label">Software</span><span class="lb-row-val" id="lb-sw"></span></div>
+      <div class="lb-divider"></div>
+      <div class="lb-tags" id="lb-tags"></div>
+      <div class="lb-counter" id="lb-counter"></div>
+    </div>
+  </div>
+</div>
+
+<script src="js/ui.js"></script>
+<script src="js/lightbox.js"></script>
+<script src="js/gallery.js"></script>
+<script>
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+  document.addEventListener('DOMContentLoaded', () => {
+    UI.init();
+    Lightbox.init();
+    Gallery.init();
+  });
+</script>
+</body>
+</html>

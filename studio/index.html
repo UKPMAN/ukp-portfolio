@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UKP MAN — Studio</title>
+  <meta name="robots" content="noindex, nofollow"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/tokens.css"/>
+  <style>
+    /* ── Studio-specific overrides ── */
+    body { min-height: 100vh; background: var(--bg-void); }
+
+    /* ── Lock Screen ── */
+    #lock {
+      position: fixed; inset: 0; z-index: 9000;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg-void);
+      transition: opacity 0.6s var(--ease-expo), visibility 0.6s;
+    }
+    #lock.out { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .lock-box {
+      width: 100%; max-width: 360px;
+      padding: 2.5rem;
+      border: 1px solid var(--border-soft);
+      background: var(--bg-card);
+      border-radius: 3px;
+      text-align: center;
+    }
+    .lock-mark {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+    .lock-mark strong { color: var(--accent); font-weight: 400; }
+    .lock-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 0.4rem;
+    }
+    .lock-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      letter-spacing: 0.03em;
+    }
+    .lock-input-wrap { position: relative; margin-bottom: 1rem; }
+    #lock-input {
+      width: 100%;
+      padding: 0.85rem 3rem 0.85rem 1rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      letter-spacing: 0.1em;
+      outline: none;
+      transition: border-color var(--dur-fast);
+      text-align: center;
+    }
+    #lock-input:focus { border-color: var(--border-glow); }
+    #lock-input.error { border-color: #c06060; animation: shake 0.3s; }
+    .lock-toggle {
+      position: absolute;
+      right: 0.75rem; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      cursor: pointer;
+      padding: 0.25rem;
+      transition: color var(--dur-fast);
+    }
+    .lock-toggle:hover { color: var(--text-secondary); }
+    .lock-btn {
+      width: 100%;
+      padding: 0.85rem;
+      background: var(--accent);
+      color: var(--bg-deep);
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: background var(--dur-fast), opacity var(--dur-fast);
+    }
+    .lock-btn:hover { background: var(--accent-bright); }
+    .lock-btn:active { opacity: 0.85; }
+    .lock-err {
+      margin-top: 0.75rem;
+      font-size: 0.72rem;
+      color: #c06060;
+      letter-spacing: 0.06em;
+      min-height: 1em;
+    }
+    .lock-hint {
+      margin-top: 1.5rem;
+      font-size: 0.66rem;
+      color: var(--text-ghost);
+      line-height: 1.6;
+    }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%,60%  { transform: translateX(-6px); }
+      40%,80%  { transform: translateX(6px); }
+    }
+
+    /* ── Studio App ── */
+    #app { display: none; min-height: 100vh; padding-bottom: 5rem; }
+    #app.visible { display: block; }
+
+    .studio-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem clamp(1.25rem,4vw,3rem);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0;
+      background: rgba(5,5,7,0.92);
+      backdrop-filter: blur(20px);
+      z-index: 100;
+    }
+    .studio-brand {
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .studio-brand-name {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      letter-spacing: 0.15em;
+      color: var(--text-primary);
+    }
+    .studio-brand-badge {
+      font-size: 0.6rem;
+      font-family: var(--font-mono);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(232,213,176,0.25);
+      padding: 2px 7px;
+      border-radius: 1px;
+    }
+    .studio-actions { display: flex; gap: 0.75rem; align-items: center; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.72rem; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      border-radius: 2px;
+      transition: all var(--dur-fast);
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--accent); color: var(--bg-deep);
+      border: 1px solid var(--accent);
+    }
+    .btn-primary:hover { background: var(--accent-bright); }
+    .btn-ghost {
+      background: transparent; color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { color: var(--text-secondary); border-color: var(--border-soft); }
+    .btn-danger {
+      background: transparent; color: #c06060;
+      border: 1px solid rgba(192,96,96,0.3);
+    }
+    .btn-danger:hover { background: rgba(192,96,96,0.1); }
+
+    /* Tabs */
+    .studio-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      padding: 0 clamp(1.25rem,4vw,3rem);
+    }
+    .tab-btn {
+      padding: 1rem 1.5rem;
+      font-size: 0.72rem; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all var(--dur-fast);
+      cursor: pointer;
+      background: none; border-left: none; border-right: none; border-top: none;
+    }
+    .tab-btn:hover { color: var(--text-secondary); }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    .tab-pane { display: none; padding: 2.5rem clamp(1.25rem,4vw,3rem); }
+    .tab-pane.active { display: block; }
+
+    /* ── Upload zone ── */
+    .upload-zone {
+      border: 1px dashed var(--border-soft);
+      border-radius: 3px;
+      padding: 3.5rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color var(--dur-med), background var(--dur-med);
+      background: var(--bg-surface);
+      position: relative;
+    }
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: var(--border-glow);
+      background: var(--bg-card);
+    }
+    .upload-zone input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .upload-icon { font-size: 2.2rem; margin-bottom: 1rem; opacity: 0.4; }
+    .upload-title {
+      font-family: var(--font-display);
+      font-size: 1.2rem; font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 0.4rem;
+    }
+    .upload-sub { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
+    .upload-sub strong { color: var(--accent); }
+
+    /* Metadata form */
+    .meta-form {
+      display: none;
+      margin-top: 2rem;
+      padding: 2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+    }
+    .meta-form.visible { display: block; }
+    .meta-form-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem; font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-label {
+      font-size: 0.65rem; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--text-muted);
+    }
+    .form-input, .form-textarea, .form-select {
+      padding: 0.7rem 0.9rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color var(--dur-fast);
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      border-color: var(--border-glow);
+    }
+    .form-textarea { resize: vertical; min-height: 80px; }
+    .form-select option { background: var(--bg-elevated); }
+    .form-check { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem; }
+    .form-check input[type="checkbox"] { accent-color: var(--accent); width: 14px; height: 14px; }
+    .form-check label { font-size: 0.82rem; color: var(--text-secondary); cursor: pointer; }
+
+    .form-actions { margin-top: 1.5rem; display: flex; gap: 0.75rem; align-items: center; }
+
+    /* Preview strip */
+    .preview-strip {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+    .preview-thumb {
+      position: relative;
+      width: 90px; height: 90px;
+      border-radius: 2px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+    }
+    .preview-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .preview-thumb-name {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      font-size: 0.55rem;
+      background: rgba(5,5,7,0.85);
+      color: var(--text-muted);
+      padding: 2px 4px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* ── Drafts grid ── */
+    .drafts-toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.5rem; gap: 1rem; flex-wrap: wrap;
+    }
+    .drafts-count {
+      font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);
+    }
+    .drafts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .draft-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+    }
+    .draft-card:hover { border-color: var(--border-soft); box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+
+    .draft-thumb {
+      width: 100%; aspect-ratio: 16/9;
+      background: var(--bg-elevated);
+      overflow: hidden;
+      position: relative;
+    }
+    .draft-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s var(--ease-expo); }
+    .draft-card:hover .draft-thumb img { transform: scale(1.04); }
+    .draft-thumb-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-ghost);
+      font-size: 1.8rem;
+    }
+
+    .draft-body { padding: 1rem; }
+    .draft-title {
+      font-family: var(--font-display);
+      font-size: 1rem; font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+    .draft-meta {
+      display: flex; gap: 0.5rem; align-items: center;
+      font-size: 0.65rem; color: var(--text-muted);
+      font-family: var(--font-mono);
+      margin-bottom: 0.75rem;
+    }
+    .draft-type-badge {
+      padding: 2px 6px; border-radius: 1px;
+      font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .badge-draft   { background: rgba(232,213,176,0.1); color: var(--accent); }
+    .badge-bts     { background: rgba(100,140,220,0.1); color: #8ab0e8; }
+    .badge-wip     { background: rgba(180,120,80,0.1);  color: #d4906a; }
+
+    .draft-notes { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem; }
+    .draft-actions { display: flex; gap: 0.5rem; }
+
+    /* ── JSON editor ── */
+    .json-editor-wrap {
+      position: relative;
+    }
+    #json-editor {
+      width: 100%;
+      min-height: 360px;
+      padding: 1.25rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      line-height: 1.7;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+      transition: border-color var(--dur-fast);
+    }
+    #json-editor:focus { border-color: var(--border-glow); }
+    .json-status {
+      margin-top: 0.5rem;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      min-height: 1.2em;
+    }
+    .json-status.ok  { color: #70c090; }
+    .json-status.err { color: #c06060; }
+
+    /* ── Settings ── */
+    .settings-group {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+    .settings-group-title {
+      padding: 0.9rem 1.25rem;
+      font-size: 0.68rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--text-muted);
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border);
+    }
+    .settings-row {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      gap: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .settings-row:last-child { border-bottom: none; }
+    .settings-row-info { flex: 1; }
+    .settings-row-label { font-size: 0.85rem; color: var(--text-primary); margin-bottom: 2px; }
+    .settings-row-desc  { font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; }
+
+    .danger-zone {
+      background: rgba(192,96,96,0.05);
+      border: 1px solid rgba(192,96,96,0.2);
+      border-radius: 3px;
+      padding: 1.25rem;
+    }
+    .danger-zone h3 {
+      font-size: 0.72rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: #c06060;
+      margin-bottom: 0.75rem;
+    }
+    .danger-zone p {
+      font-size: 0.82rem; color: var(--text-muted);
+      margin-bottom: 1rem; line-height: 1.6;
+    }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 9999;
+      padding: 0.75rem 1.25rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-soft);
+      border-radius: 3px;
+      font-size: 0.8rem; color: var(--text-primary);
+      box-shadow: var(--shadow-md);
+      transform: translateY(12px); opacity: 0;
+      transition: all 0.3s var(--ease-expo);
+      pointer-events: none;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
+    #toast.success { border-color: rgba(112,192,144,0.4); }
+    #toast.error   { border-color: rgba(192,96,96,0.4); }
+
+    /* Instruction box */
+    .info-box {
+      padding: 1.25rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 2px;
+      margin-bottom: 2rem;
+    }
+    .info-box-title { font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
+    .info-box p     { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 0.4rem; }
+    .info-box p:last-child { margin: 0; }
+    .info-box code  { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); background: var(--accent-dim); padding: 1px 5px; border-radius: 2px; }
+
+    @keyframes fadeUp   { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+    body::after { display: none; } /* hide grain on studio page */
+  </style>
+</head>
+<body>
+
+<!-- ── Lock Screen ── -->
+<div id="lock">
+  <div class="lock-box">
+    <div class="lock-mark"><strong>UKP</strong> MAN</div>
+    <h1 class="lock-title">Studio Access</h1>
+    <p class="lock-sub">Private area — enter your password to continue.</p>
+    <div class="lock-input-wrap">
+      <input type="password" id="lock-input" placeholder="••••••••" autocomplete="current-password" />
+      <button class="lock-toggle" id="lock-toggle" title="Show/hide" tabindex="-1">👁</button>
+    </div>
+    <button class="lock-btn" id="lock-btn">Enter Studio</button>
+    <div class="lock-err" id="lock-err"></div>
+    <p class="lock-hint">
+      First time? Set your password in Settings after login.<br/>
+      Default: <code style="font-family:monospace;font-size:0.7rem;color:var(--accent)">ukpman2025</code>
+    </p>
+  </div>
+</div>
+
+<!-- ── Studio App ── -->
+<div id="app">
+
+  <!-- Header -->
+  <div class="studio-header">
+    <div class="studio-brand">
+      <span class="studio-brand-name">UKP MAN</span>
+      <span class="studio-brand-badge">Studio</span>
+    </div>
+    <div class="studio-actions">
+      <a href="../" class="btn btn-ghost">← Public Site</a>
+      <button class="btn btn-ghost" id="logout-btn">Lock</button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="studio-tabs">
+    <button class="tab-btn active" data-tab="upload">Upload</button>
+    <button class="tab-btn" data-tab="drafts">Drafts & BTS</button>
+    <button class="tab-btn" data-tab="gallery-json">Gallery JSON</button>
+    <button class="tab-btn" data-tab="settings">Settings</button>
+  </div>
+
+  <!-- ═════ TAB: UPLOAD ═════ -->
+  <div class="tab-pane active" id="tab-upload">
+
+    <div class="info-box">
+      <div class="info-box-title">How uploading works</div>
+      <p>GitHub Pages is a static host — there's no server to receive files. The workflow is: <strong style="color:var(--text-primary)">prepare here → copy to GitHub</strong>.</p>
+      <p>1. Drop your renders below and fill in the metadata. 2. Click <strong style="color:var(--text-primary)">"Generate JSON"</strong> to get the ready-to-paste gallery.json entry. 3. Upload the image to <code>images/renders/</code> on GitHub, then paste the JSON into your gallery.json.</p>
+    </div>
+
+    <div class="upload-zone" id="upload-zone">
+      <input type="file" id="file-input" accept="image/*" multiple />
+      <div class="upload-icon">⬆</div>
+      <div class="upload-title">Drop renders here</div>
+      <div class="upload-sub">JPG, PNG, WEBP · Multiple files OK<br/><strong>No size limit in this tool</strong> — compress before pushing to GitHub</div>
+    </div>
+
+    <div class="preview-strip" id="preview-strip"></div>
+
+    <div class="meta-form" id="meta-form">
+      <div class="meta-form-title">Render Metadata</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="f-title">Title *</label>
+          <input class="form-input" id="f-title" type="text" placeholder="The Concrete Cathedral" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="f-cat">Category</label>
+          <input class="form-input" id="f-cat" type="text" placeholder="Interior / Exterior / Abstract" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="f-software">Software (comma separated)</label>
+          <input class="form-input" id="f-software" type="text" placeholder="Blender, Cycles" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="f-year">Year</label>
+          <input class="form-input" id="f-year" type="number" placeholder="2025" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="f-width">Width (px)</label>
+          <input class="form-input" id="f-width" type="number" placeholder="1920" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="f-height">Height (px)</label>
+          <input class="form-input" id="f-height" type="number" placeholder="1080" />
+        </div>
+        <div class="form-group full">
+          <label class="form-label" for="f-desc">Description</label>
+          <textarea class="form-textarea" id="f-desc" placeholder="A brief description of the piece..."></textarea>
+        </div>
+        <div class="form-group">
+          <div class="form-check">
+            <input type="checkbox" id="f-featured" />
+            <label for="f-featured">Mark as Featured (gold dot in gallery)</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" id="gen-json-btn">Generate JSON Entry</button>
+        <button class="btn btn-ghost" id="clear-form-btn">Clear</button>
+      </div>
+    </div>
+
+    <!-- Generated JSON output -->
+    <div id="json-output-wrap" style="display:none; margin-top:1.5rem;">
+      <div class="info-box" style="border-left-color:#70c090;">
+        <div class="info-box-title" style="color:#70c090;">✓ Ready to copy</div>
+        <p>Copy this block and paste it into the <code>"renders"</code> array in your <code>gallery.json</code> file on GitHub.</p>
+      </div>
+      <textarea id="json-output" class="form-input" style="width:100%;font-family:var(--font-mono);font-size:0.78rem;min-height:220px;resize:vertical;color:var(--accent);background:var(--bg-surface);" readonly></textarea>
+      <div class="form-actions">
+        <button class="btn btn-primary" id="copy-json-btn">Copy JSON</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═════ TAB: DRAFTS & BTS ═════ -->
+  <div class="tab-pane" id="tab-drafts">
+
+    <div class="drafts-toolbar">
+      <div>
+        <h2 style="font-family:var(--font-display);font-size:1.4rem;font-weight:400;color:var(--text-primary);">Drafts &amp; Behind the Scenes</h2>
+        <div class="drafts-count" id="drafts-count">0 items</div>
+      </div>
+      <button class="btn btn-primary" id="add-draft-btn">+ Add Item</button>
+    </div>
+
+    <!-- Add draft form (hidden) -->
+    <div class="meta-form" id="draft-form">
+      <div class="meta-form-title">New Draft / BTS Entry</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="d-title">Title *</label>
+          <input class="form-input" id="d-title" type="text" placeholder="WIP: Concrete Study 01" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="d-type">Type</label>
+          <select class="form-select" id="d-type">
+            <option value="draft">Draft / WIP</option>
+            <option value="bts">Behind the Scenes</option>
+            <option value="wip">Work in Progress</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="d-image">Image (optional)</label>
+          <input type="file" id="d-image" accept="image/*" style="display:none"/>
+          <button class="btn btn-ghost" onclick="document.getElementById('d-image').click()" type="button">Choose Image</button>
+          <span id="d-image-name" style="font-size:0.72rem;color:var(--text-muted);margin-top:4px;display:block;"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="d-date">Date</label>
+          <input class="form-input" id="d-date" type="date" />
+        </div>
+        <div class="form-group full">
+          <label class="form-label" for="d-notes">Notes / Description</label>
+          <textarea class="form-textarea" id="d-notes" placeholder="What stage is this at? Any context..."></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="form-label" for="d-tags">Tags (comma separated)</label>
+          <input class="form-input" id="d-tags" type="text" placeholder="lighting, WIP, Blender" />
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" id="save-draft-btn">Save Entry</button>
+        <button class="btn btn-ghost" id="cancel-draft-btn">Cancel</button>
+      </div>
+    </div>
+
+    <div class="drafts-grid" id="drafts-grid"></div>
+
+    <div id="drafts-empty" style="padding:4rem 0;text-align:center;color:var(--text-muted);font-family:var(--font-display);font-size:1.1rem;font-style:italic;">
+      No drafts yet. Add your first one above.
+    </div>
+
+  </div>
+
+  <!-- ═════ TAB: GALLERY JSON ═════ -->
+  <div class="tab-pane" id="tab-gallery-json">
+
+    <div class="info-box">
+      <div class="info-box-title">Direct JSON Editor</div>
+      <p>This loads your live <code>gallery.json</code> for reference. Edit it here, then <strong style="color:var(--text-primary)">copy the result</strong> and paste it into your GitHub repo. Changes here don't auto-save (no server) — you must commit to GitHub.</p>
+      <p>Use <strong style="color:var(--text-primary)">"Fetch from site"</strong> to load the current live JSON, or paste manually.</p>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <button class="btn btn-ghost" id="fetch-json-btn">Fetch Live gallery.json</button>
+      <button class="btn btn-primary" id="copy-full-json-btn">Copy All JSON</button>
+      <button class="btn btn-ghost" id="format-json-btn">Format / Validate</button>
+    </div>
+
+    <div class="json-editor-wrap">
+      <textarea id="json-editor" spellcheck="false" placeholder='Paste your gallery.json here or click "Fetch Live gallery.json"...'></textarea>
+    </div>
+    <div class="json-status" id="json-status"></div>
+
+  </div>
+
+  <!-- ═════ TAB: SETTINGS ═════ -->
+  <div class="tab-pane" id="tab-settings">
+
+    <div class="settings-group">
+      <div class="settings-group-title">Security</div>
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <div class="settings-row-label">Change Studio Password</div>
+          <div class="settings-row-desc">Updates the hashed password stored in your browser. You'll need to enter it on next visit.</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;min-width:220px;">
+          <input class="form-input" type="password" id="new-pass-1" placeholder="New password" />
+          <input class="form-input" type="password" id="new-pass-2" placeholder="Confirm password" />
+          <button class="btn btn-primary" id="change-pass-btn">Update Password</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <div class="settings-row-label">Studio URL</div>
+          <div class="settings-row-desc">Your studio lives at a secret URL. Don't share it. It's not indexed by search engines.</div>
+        </div>
+        <code id="studio-url" style="font-family:var(--font-mono);font-size:0.75rem;color:var(--accent);word-break:break-all;max-width:260px;"></code>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-group-title">Data</div>
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <div class="settings-row-label">Export Drafts</div>
+          <div class="settings-row-desc">Download your drafts &amp; BTS entries as a JSON file for backup.</div>
+        </div>
+        <button class="btn btn-ghost" id="export-drafts-btn">Export JSON</button>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <div class="settings-row-label">Import Drafts</div>
+          <div class="settings-row-desc">Restore from a previously exported JSON backup.</div>
+        </div>
+        <div>
+          <input type="file" id="import-file" accept=".json" style="display:none"/>
+          <button class="btn btn-ghost" id="import-btn">Import JSON</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="danger-zone">
+      <h3>⚠ Danger Zone</h3>
+      <p>Permanently clear all drafts and BTS entries stored in this browser. This cannot be undone.</p>
+      <button class="btn btn-danger" id="clear-drafts-btn">Clear All Drafts</button>
+    </div>
+
+  </div>
+
+</div><!-- /#app -->
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   STUDIO — UKP MAN
+   Auth is localStorage hash (SHA-256 via Web Crypto).
+   Drafts stored in localStorage as JSON.
+   Note: This is personal-use security — the URL is the primary
+   protection. Keep your /studio URL private.
+   ============================================================ */
+
+const DEFAULT_PASS = 'ukpman2025';
+const PASS_KEY     = 'ukpman_studio_hash';
+const DRAFTS_KEY   = 'ukpman_drafts';
+const SESSION_KEY  = 'ukpman_session';
+
+/* ── Crypto helpers ── */
+async function sha256(str) {
+  const buf  = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function getStoredHash() {
+  return localStorage.getItem(PASS_KEY) || await sha256(DEFAULT_PASS);
+}
+
+/* ── Toast ── */
+function toast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show ' + type;
+  setTimeout(() => el.className = '', 3000);
+}
+
+/* ── Lock / Unlock ── */
+async function checkSession() {
+  const sess = sessionStorage.getItem(SESSION_KEY);
+  if (sess === 'open') unlock();
+}
+
+async function tryUnlock() {
+  const val  = document.getElementById('lock-input').value;
+  const hash = await sha256(val);
+  const stored = await getStoredHash();
+  if (hash === stored) {
+    sessionStorage.setItem(SESSION_KEY, 'open');
+    unlock();
+  } else {
+    const inp = document.getElementById('lock-input');
+    inp.classList.add('error');
+    document.getElementById('lock-err').textContent = 'Incorrect password.';
+    setTimeout(() => inp.classList.remove('error'), 600);
+  }
+}
+
+function unlock() {
+  document.getElementById('lock').classList.add('out');
+  document.getElementById('app').classList.add('visible');
+  document.getElementById('studio-url').textContent = location.href;
+  renderDrafts();
+}
+
+function lock() {
+  sessionStorage.removeItem(SESSION_KEY);
+  location.reload();
+}
+
+/* Events: lock */
+document.getElementById('lock-btn').addEventListener('click', tryUnlock);
+document.getElementById('lock-input').addEventListener('keydown', e => { if(e.key === 'Enter') tryUnlock(); });
+document.getElementById('lock-toggle').addEventListener('click', () => {
+  const inp = document.getElementById('lock-input');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+});
+document.getElementById('logout-btn').addEventListener('click', lock);
+checkSession();
+
+/* ── Tabs ── */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ── Upload Tab ── */
+const uploadZone = document.getElementById('upload-zone');
+const fileInput  = document.getElementById('file-input');
+const metaForm   = document.getElementById('meta-form');
+let uploadedFiles = [];
+
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadZone.classList.remove('drag-over');
+  handleFiles(Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')));
+});
+fileInput.addEventListener('change', e => handleFiles(Array.from(e.target.files)));
+
+function handleFiles(files) {
+  if (!files.length) return;
+  uploadedFiles = files;
+  const strip = document.getElementById('preview-strip');
+  strip.innerHTML = '';
+  files.forEach(f => {
+    const thumb = document.createElement('div');
+    thumb.className = 'preview-thumb';
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(f);
+    const name = document.createElement('div');
+    name.className = 'preview-thumb-name';
+    name.textContent = f.name;
+    thumb.append(img, name);
+    strip.appendChild(thumb);
+
+    // Auto-fill dimensions
+    img.onload = () => {
+      document.getElementById('f-width').value  = img.naturalWidth;
+      document.getElementById('f-height').value = img.naturalHeight;
+    };
+  });
+  document.getElementById('f-year').value = new Date().getFullYear();
+  metaForm.classList.add('visible');
+}
+
+document.getElementById('gen-json-btn').addEventListener('click', () => {
+  const title = document.getElementById('f-title').value.trim();
+  if (!title) { toast('Add a title first.', 'error'); return; }
+  const filename = uploadedFiles.length ? uploadedFiles[0].name : 'render-XXX.jpg';
+  const entry = {
+    id:       Date.now().toString().slice(-6),
+    title,
+    category: document.getElementById('f-cat').value.trim() || 'Architecture',
+    description: document.getElementById('f-desc').value.trim(),
+    software: document.getElementById('f-software').value.split(',').map(s => s.trim()).filter(Boolean),
+    year:     parseInt(document.getElementById('f-year').value) || new Date().getFullYear(),
+    featured: document.getElementById('f-featured').checked,
+    image:    'images/renders/' + filename,
+    width:    parseInt(document.getElementById('f-width').value)  || 1920,
+    height:   parseInt(document.getElementById('f-height').value) || 1080
+  };
+  const out = document.getElementById('json-output');
+  out.value = JSON.stringify(entry, null, 2);
+  document.getElementById('json-output-wrap').style.display = 'block';
+  out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  toast('JSON entry generated!');
+});
+
+document.getElementById('copy-json-btn').addEventListener('click', () => {
+  const out = document.getElementById('json-output');
+  navigator.clipboard.writeText(out.value).then(() => toast('Copied to clipboard!')).catch(() => { out.select(); document.execCommand('copy'); toast('Copied!'); });
+});
+
+document.getElementById('clear-form-btn').addEventListener('click', () => {
+  ['f-title','f-cat','f-software','f-desc','f-year','f-width','f-height'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-featured').checked = false;
+  document.getElementById('preview-strip').innerHTML = '';
+  document.getElementById('meta-form').classList.remove('visible');
+  document.getElementById('json-output-wrap').style.display = 'none';
+  uploadedFiles = [];
+});
+
+/* ── Drafts Tab ── */
+function getDrafts() {
+  try { return JSON.parse(localStorage.getItem(DRAFTS_KEY) || '[]'); } catch { return []; }
+}
+function saveDrafts(arr) { localStorage.setItem(DRAFTS_KEY, JSON.stringify(arr)); }
+
+document.getElementById('add-draft-btn').addEventListener('click', () => {
+  const f = document.getElementById('draft-form');
+  f.classList.toggle('visible');
+  if (f.classList.contains('visible')) {
+    document.getElementById('d-date').value = new Date().toISOString().split('T')[0];
+  }
+});
+
+document.getElementById('cancel-draft-btn').addEventListener('click', () => {
+  document.getElementById('draft-form').classList.remove('visible');
+});
+
+document.getElementById('d-image').addEventListener('change', e => {
+  const f = e.target.files[0];
+  document.getElementById('d-image-name').textContent = f ? f.name : '';
+});
+
+document.getElementById('save-draft-btn').addEventListener('click', () => {
+  const title = document.getElementById('d-title').value.trim();
+  if (!title) { toast('Add a title.', 'error'); return; }
+
+  const imgFile = document.getElementById('d-image').files[0];
+
+  function saveEntry(imgDataUrl) {
+    const entry = {
+      id:    Date.now(),
+      title,
+      type:  document.getElementById('d-type').value,
+      date:  document.getElementById('d-date').value,
+      notes: document.getElementById('d-notes').value.trim(),
+      tags:  document.getElementById('d-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+      image: imgDataUrl || null
+    };
+    const arr = getDrafts();
+    arr.unshift(entry);
+    saveDrafts(arr);
+    renderDrafts();
+    document.getElementById('draft-form').classList.remove('visible');
+    // Reset
+    ['d-title','d-notes','d-tags','d-date'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('d-image').value = '';
+    document.getElementById('d-image-name').textContent = '';
+    toast('Entry saved!');
+  }
+
+  if (imgFile) {
+    const reader = new FileReader();
+    reader.onload = e => saveEntry(e.target.result);
+    reader.readAsDataURL(imgFile);
+  } else {
+    saveEntry(null);
+  }
+});
+
+function renderDrafts() {
+  const arr  = getDrafts();
+  const grid = document.getElementById('drafts-grid');
+  const empty= document.getElementById('drafts-empty');
+  const count= document.getElementById('drafts-count');
+  count.textContent = arr.length + ' item' + (arr.length !== 1 ? 's' : '');
+  grid.innerHTML = '';
+  if (!arr.length) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  arr.forEach(d => grid.appendChild(makeDraftCard(d)));
+}
+
+function makeDraftCard(d) {
+  const el = document.createElement('div');
+  el.className = 'draft-card';
+  const typeLabel = { draft:'Draft', bts:'BTS', wip:'WIP' }[d.type] || d.type;
+  const badgeClass = { draft:'badge-draft', bts:'badge-bts', wip:'badge-wip' }[d.type] || 'badge-draft';
+  el.innerHTML = `
+    <div class="draft-thumb">
+      ${d.image
+        ? `<img src="${d.image}" alt="${d.title}" loading="lazy"/>`
+        : '<div class="draft-thumb-placeholder">🎨</div>'}
+    </div>
+    <div class="draft-body">
+      <div class="draft-title">${d.title}</div>
+      <div class="draft-meta">
+        <span class="draft-type-badge ${badgeClass}">${typeLabel}</span>
+        <span>${d.date || ''}</span>
+      </div>
+      ${d.notes ? `<div class="draft-notes">${d.notes}</div>` : ''}
+      ${d.tags && d.tags.length ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:0.75rem;">${d.tags.map(t => `<span class="lb-tag">${t}</span>`).join('')}</div>` : ''}
+      <div class="draft-actions">
+        <button class="btn btn-danger" data-id="${d.id}" data-action="delete">Delete</button>
+      </div>
+    </div>`;
+  el.querySelector('[data-action="delete"]').addEventListener('click', () => {
+    if (!confirm('Delete this entry?')) return;
+    saveDrafts(getDrafts().filter(x => x.id !== d.id));
+    renderDrafts();
+    toast('Deleted.');
+  });
+  return el;
+}
+
+/* ── Gallery JSON Tab ── */
+document.getElementById('fetch-json-btn').addEventListener('click', async () => {
+  try {
+    const res  = await fetch('../gallery.json?v=' + Date.now());
+    const text = await res.text();
+    document.getElementById('json-editor').value = text;
+    validateJson();
+    toast('Fetched live gallery.json');
+  } catch (e) {
+    toast('Could not fetch gallery.json — are you on GitHub Pages?', 'error');
+  }
+});
+
+document.getElementById('format-json-btn').addEventListener('click', () => {
+  validateJson(true);
+});
+
+document.getElementById('copy-full-json-btn').addEventListener('click', () => {
+  const val = document.getElementById('json-editor').value.trim();
+  if (!val) { toast('Nothing to copy.', 'error'); return; }
+  navigator.clipboard.writeText(val).then(() => toast('Copied!')).catch(() => toast('Copy failed.', 'error'));
+});
+
+document.getElementById('json-editor').addEventListener('input', () => validateJson());
+
+function validateJson(format = false) {
+  const el  = document.getElementById('json-editor');
+  const sta = document.getElementById('json-status');
+  try {
+    const parsed = JSON.parse(el.value);
+    if (format) el.value = JSON.stringify(parsed, null, 2);
+    sta.textContent = '✓ Valid JSON';
+    sta.className = 'json-status ok';
+  } catch (e) {
+    sta.textContent = '✗ ' + e.message;
+    sta.className = 'json-status err';
+  }
+}
+
+/* ── Settings Tab ── */
+document.getElementById('change-pass-btn').addEventListener('click', async () => {
+  const p1 = document.getElementById('new-pass-1').value;
+  const p2 = document.getElementById('new-pass-2').value;
+  if (!p1) { toast('Enter a new password.', 'error'); return; }
+  if (p1 !== p2) { toast('Passwords do not match.', 'error'); return; }
+  if (p1.length < 8) { toast('Use at least 8 characters.', 'error'); return; }
+  const h = await sha256(p1);
+  localStorage.setItem(PASS_KEY, h);
+  document.getElementById('new-pass-1').value = '';
+  document.getElementById('new-pass-2').value = '';
+  toast('Password updated! Remember it — you\'ll need it next time.');
+});
+
+document.getElementById('export-drafts-btn').addEventListener('click', () => {
+  const data = localStorage.getItem(DRAFTS_KEY) || '[]';
+  const blob = new Blob([data], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'ukpman-drafts-backup-' + new Date().toISOString().split('T')[0] + '.json';
+  a.click();
+  toast('Drafts exported!');
+});
+
+document.getElementById('import-btn').addEventListener('click', () => {
+  document.getElementById('import-file').click();
+});
+document.getElementById('import-file').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const arr = JSON.parse(ev.target.result);
+      if (!Array.isArray(arr)) throw new Error('Expected an array');
+      saveDrafts(arr);
+      renderDrafts();
+      toast('Imported ' + arr.length + ' entries.');
+    } catch { toast('Invalid backup file.', 'error'); }
+  };
+  reader.readAsText(f);
+});
+
+document.getElementById('clear-drafts-btn').addEventListener('click', () => {
+  if (!confirm('Delete ALL drafts permanently? This cannot be undone.')) return;
+  localStorage.removeItem(DRAFTS_KEY);
+  renderDrafts();
+  toast('All drafts cleared.');
+});
+</script>
+</body>
+</html>
