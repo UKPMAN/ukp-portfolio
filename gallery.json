@@ -9,40 +9,20 @@
   },
   "renders": [
     {
-      "id": "001",
-      "title": "The Concrete Cathedral",
-      "category": "Interior",
-      "description": "A brutalist chapel interior bathed in raking afternoon light. Exploring raw material honesty and spiritual geometry.",
-      "software": ["Blender", "Cycles"],
-      "year": 2025,
-      "featured": true,
-      "image": "images/renders/render-001.jpg",
-      "width": 1920,
-      "height": 1080
-    },
-    {
-      "id": "002",
-      "title": "Thermal Corridor",
-      "category": "Interior",
-      "description": "Long-exposure study of a Japanese onsen corridor. Steam, stone, and silence.",
-      "software": ["Cinema 4D", "Octane"],
-      "year": 2025,
-      "featured": true,
-      "image": "images/renders/render-002.jpg",
-      "width": 1080,
-      "height": 1350
-    },
-    {
-      "id": "003",
-      "title": "Glass House Study",
+      "id": "386197",
+      "title": "UKP MAN on a wall",
       "category": "Exterior",
-      "description": "Mies-inspired pavilion at dusk. Transparency and reflection as architectural language.",
-      "software": ["Blender", "Cycles", "Lightroom"],
-      "year": 2024,
+      "description": "",
+      "software": [
+        "Blender",
+        "EVEE"
+      ],
+      "year": 2025,
       "featured": false,
-      "image": "images/renders/render-003.jpg",
+      "image": "images/renders/UKPMANGrafiti.png",
       "width": 1920,
-      "height": 1080
+      "height": 2117
     }
+    
   ]
 }
